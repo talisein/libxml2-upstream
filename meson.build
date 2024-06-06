@@ -706,7 +706,15 @@ xml_lib = library(
 )
 
 dep_inc = include_directories('include')
-xml_dep = declare_dependency(include_directories: dep_inc, link_with: xml_lib)
+
+dep_args = ''
+if sys_cygwin or sys_windows
+    if get_option('default_library') == 'static'
+      dep_args = '-DLIBXML_STATIC'
+    endif
+endif
+
+xml_dep = declare_dependency(include_directories: dep_inc, link_with: xml_lib, compile_args: dep_args)
 
 meson.override_dependency('libxml-2.0', xml_dep)
 
